@@ -49,6 +49,7 @@ target/
 
 ### Maven ###
 *.mvn
+*mwnw
 
 ### Eclipse ###
 .apt_generated
