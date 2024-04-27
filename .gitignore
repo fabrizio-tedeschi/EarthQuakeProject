@@ -38,14 +38,17 @@ target/
 !**/src/test/**/target/
 
 ### IntelliJ IDEA ###
-.idea
-.idea/modules.xml
+*.idea
+*.idea/modules.xml
 .idea/jarRepositories.xml
 .idea/compiler.xml
 .idea/libraries/
 *.iws
 *.iml
 *.ipr
+
+### Maven ###
+*.mvn
 
 ### Eclipse ###
 .apt_generated
