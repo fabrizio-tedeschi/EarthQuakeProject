@@ -94,6 +94,7 @@ public class OkHttpDemo {
             System.out.println("Id: " + earthquakes.getFirst().getId());
             System.out.println("Title: " + earthquakes.getFirst().getProperties().getTitle());
             System.out.println("Magnitude: " + earthquakes.getFirst().getProperties().getMag());
+            System.out.println("Date: " + earthquakes.getFirst().getProperties().getTime());
 
         } catch (IOException e) {
             //Catching errors and throwing exceptions

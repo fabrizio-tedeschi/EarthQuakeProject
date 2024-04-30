@@ -2,6 +2,8 @@ package entities;
 
 import java.net.URI;
 
+import java.util.Date;
+
 public class Properties {
     private double mag;
     private String place;
@@ -21,9 +23,7 @@ public class Properties {
         return place;
     }
 
-    public long getTime() {
-        return time;
-    }
+    public Date getTime() { return new Date(time); }
 
     public URI getDetail() {
         return detail;
