@@ -1,9 +1,9 @@
-package ftvp.earthquakeapp;
+package ftvp.earthquakeapp.controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 
-public class HelloController {
+public class OverviewController {
     @FXML
     private Label welcomeText;
 
