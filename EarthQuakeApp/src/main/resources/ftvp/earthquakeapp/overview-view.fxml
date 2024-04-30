@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="750.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <TableView layoutY="216.0" prefHeight="284.0" prefWidth="750.0">
+        <columns>
+          <TableColumn prefWidth="79.0" text="Magnitude" />
+          <TableColumn prefWidth="230.0" text="Title" />
+            <TableColumn minWidth="0.0" prefWidth="160.0" text="Palce" />
+            <TableColumn prefWidth="182.0" text="Time" />
+            <TableColumn prefWidth="98.0" text="Depth (KM)" />
+        </columns>
+      </TableView>
+   </children>
+</AnchorPane>

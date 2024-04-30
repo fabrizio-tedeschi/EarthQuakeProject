@@ -1,0 +1,2 @@
+GET https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&minmagnitude=6
+//GET https://earthquake.usgs.gov/fdsnws/event/1/catalogs
