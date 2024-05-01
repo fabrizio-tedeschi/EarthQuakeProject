@@ -1,12 +1,12 @@
-package ftvp.earthquakeapp.persistence.models;
+package ftvp.earthquakeapp.persistence.model;
 
 import java.util.Objects;
 
 public class Earthquake {
 
-    private String id;
-    private Properties properties;
-    private Geometry geometry;
+    public String id;
+    Infos infos;
+    Geometry geometry;
 
     public Earthquake() {}
 
@@ -14,8 +14,8 @@ public class Earthquake {
         return id;
     }
 
-    public Properties getProperties() {
-        return properties;
+    public Infos getProperties() {
+        return infos;
     }
 
     public Geometry getGeometry() {
@@ -26,8 +26,8 @@ public class Earthquake {
         this.id = id;
     }
 
-    public void setProperties(Properties properties) {
-        this.properties = properties;
+    public void setProperties(Infos infos) {
+        this.infos = infos;
     }
 
     public void setGeometry(Geometry geometry) {
@@ -43,10 +43,15 @@ public class Earthquake {
     }
 
     @Override
+    public int hashCode() {
+        return Objects.hash(id, geometry, infos);
+    }
+
+    @Override
     public String toString() {
         return "Earthquake{" +
                 "id='" + id + '\'' +
-                ", properties=" + properties.toString() +
+                ", infos=" + infos.toString() +
                 ", geometry=" + geometry.toString() +
                 '}';
     }

@@ -1,2 +1,3 @@
-GET https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&minmagnitude=6
+//GET https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2024-05-01
+GET https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&minmagnitude=7
 //GET https://earthquake.usgs.gov/fdsnws/event/1/catalogs

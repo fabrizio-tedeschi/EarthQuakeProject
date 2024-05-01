@@ -1,7 +1,9 @@
 package ftvp.earthquakeapp;
 
+import ftvp.earthquakeapp.controller.OverviewController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
@@ -10,9 +12,13 @@ import java.io.IOException;
 public class App extends Application {
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("overview-view.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 750, 500);
-        stage.setTitle("Hello!");
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("overview-view.fxml"));
+        Parent root = loader.load();
+        OverviewController overviewController = loader.getController();
+        overviewController.initialize();
+
+        Scene scene = new Scene(root);
+        stage.setTitle("Earthquake App");
         stage.setScene(scene);
         stage.show();
     }

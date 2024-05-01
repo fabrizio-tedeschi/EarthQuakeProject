@@ -1,20 +1,19 @@
-package ftvp.earthquakeapp.persistence.models;
+package ftvp.earthquakeapp.persistence.model;
 
-import java.net.URL;
 import java.util.Objects;
 
 public class Metadata {
 
-    private String generated;
-    private URL url;
-    private String title;
-    private int status;
-    private String api;
-    private long count;
+    String generated;
+    String url;
+    String title;
+    int status;
+    String api;
+    long count;
 
     public Metadata() {}
 
-    public Metadata(String generated, URL url, String title, int status, String api, long count) {
+    public Metadata(String generated, String url, String title, int status, String api, long count) {
         this.generated = generated;
         this.url = url;
         this.title = title;
@@ -27,7 +26,7 @@ public class Metadata {
         return generated;
     }
 
-    public URL getUrl() {
+    public String getUrl() {
         return url;
     }
 
@@ -51,7 +50,7 @@ public class Metadata {
         this.generated = generated;
     }
 
-    public void setUrl(URL url) {
+    public void setUrl(String url) {
         this.url = url;
     }
 
@@ -77,6 +76,11 @@ public class Metadata {
         if (o == null || getClass() != o.getClass()) return false;
         Metadata metadata = (Metadata) o;
         return getStatus() == metadata.getStatus() && getCount() == metadata.getCount() && Objects.equals(getGenerated(), metadata.getGenerated()) && Objects.equals(getUrl(), metadata.getUrl()) && Objects.equals(getTitle(), metadata.getTitle()) && Objects.equals(getApi(), metadata.getApi());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(generated, url, title, status, api, count);
     }
 
     @Override
