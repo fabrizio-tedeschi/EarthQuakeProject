@@ -1,8 +1,7 @@
 package ftvp.earthquakeapp.controller;
 
-import ftvp.earthquakeapp.persistence.dao.EarthquakeRepository;
+import ftvp.earthquakeapp.persistence.rest.EarthquakeRequestMaker;
 import ftvp.earthquakeapp.persistence.model.Earthquake;
-import ftvp.earthquakeapp.persistence.model.Infos;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -11,7 +10,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.StreamSupport;
@@ -19,11 +17,10 @@ import java.util.stream.StreamSupport;
 public class OverviewController {
 
     private final ObservableList<Earthquake> earthquakes = FXCollections.observableArrayList();
-    private final ObservableList<Infos> infosList = FXCollections.observableArrayList();
-    private EarthquakeRepository earthquakeRepository = new EarthquakeRepository();
+    private EarthquakeRequestMaker earthquakeRequestMaker = new EarthquakeRequestMaker();
 
     @FXML
-    private TableView<Infos> tvProperties;
+    private TableView<Earthquake> tvEarthquakes;
 
     public void initialize(){
         initDataSource();
@@ -31,29 +28,25 @@ public class OverviewController {
     }
 
     public void initDataSource(){
-        this.earthquakeRepository = new EarthquakeRepository();
-        List<Earthquake> earthquakesFound = earthquakeRepository.getDefault();
+        List<Earthquake> earthquakesFound = earthquakeRequestMaker.getDefault();
         earthquakes.addAll(StreamSupport.stream(earthquakesFound.spliterator(), false).toList());
-
-        List<Infos> tmpList = new ArrayList<>();
-        for(Earthquake eq : earthquakesFound){
-            tmpList.add(eq.getProperties());
-        }
-
-        infosList.addAll(StreamSupport.stream(tmpList.spliterator(), false).toList());
     }
 
     @FXML
     public void initializeTableViewProperties(){
 
-        TableColumn<Infos, String> titleCol = new TableColumn<Infos, String>("Title");
-        TableColumn<Infos, Integer> magCol = new TableColumn<>("Magnitude");
-        TableColumn<Infos, String> placeCol = new TableColumn<>("Place");
-        TableColumn<Infos, Date> timeCol = new TableColumn<>("Time");
-        TableColumn<Infos, Integer> tsunamiCol = new TableColumn<>("Tsunami");
+        TableColumn<Earthquake, String> idCol = new TableColumn<>("ID");
+        TableColumn<Earthquake, String> titleCol = new TableColumn<>("Title");
+        TableColumn<Earthquake, Integer> magCol = new TableColumn<>("Magnitude");
+        TableColumn<Earthquake, String> placeCol = new TableColumn<>("Place");
+        TableColumn<Earthquake, Date> timeCol = new TableColumn<>("Time");
+        TableColumn<Earthquake, Integer> tsunamiCol = new TableColumn<>("Tsunami");
+
+        idCol.setPrefWidth(70);
+        idCol.setCellValueFactory(new PropertyValueFactory<>("id"));
 
         titleCol.setPrefWidth(250);
-        titleCol.setCellValueFactory(new PropertyValueFactory<Infos, String>("title"));
+        titleCol.setCellValueFactory(new PropertyValueFactory<>("title"));
 
         magCol.setPrefWidth(70);
         magCol.setCellValueFactory(new PropertyValueFactory<>("mag"));
@@ -67,7 +60,7 @@ public class OverviewController {
         tsunamiCol.setPrefWidth(70);
         tsunamiCol.setCellValueFactory(new PropertyValueFactory<>("tsunami"));
 
-        tvProperties.setItems(infosList);
-        tvProperties.getColumns().setAll(titleCol, magCol, placeCol, timeCol, tsunamiCol);
+        tvEarthquakes.setItems(earthquakes);
+        tvEarthquakes.getColumns().setAll(idCol, titleCol, magCol, placeCol, timeCol, tsunamiCol);
     }
 }

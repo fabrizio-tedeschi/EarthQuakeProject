@@ -1,8 +1,7 @@
-package ftvp.earthquakeapp.persistence.dao;
+package ftvp.earthquakeapp.persistence.rest;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import ftvp.earthquakeapp.persistence.model.Infos;
 import okhttp3.*;
 
 import ftvp.earthquakeapp.persistence.model.Earthquake;
@@ -15,7 +14,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EarthquakeRepository implements Repository<Earthquake> {
+public class EarthquakeRequestMaker implements RequestMaker<Earthquake> {
 
     public List<Earthquake> getDefault() {
 
@@ -72,28 +71,23 @@ public class EarthquakeRepository implements Repository<Earthquake> {
 
             for(JsonNode feature : bodyNode.get("features")){
 
-                Earthquake tmp = new Earthquake();
+                Geometry geom = new Geometry(
+                        feature.get("geometry").get("coordinates").get(0).asDouble(),
+                        feature.get("geometry").get("coordinates").get(1).asDouble(),
+                        feature.get("geometry").get("coordinates").get(2).asDouble()
+                );
 
-                String id = feature.get("id").asText();
-                tmp.setId(id);
-
-                Infos prop = new Infos(
+                Earthquake tmp = new Earthquake(
+                        feature.get("id").asText(),
                         feature.get("properties").get("title").asText(),
                         feature.get("properties").get("mag").asDouble(),
                         feature.get("properties").get("place").asText(),
                         feature.get("properties").get("time").asLong(),
                         feature.get("properties").get("detail").asText(),
                         feature.get("properties").get("alert").asText(),
-                        feature.get("properties").get("tsunami").asInt()
+                        feature.get("properties").get("tsunami").asInt(),
+                        geom
                 );
-                tmp.setProperties(prop);
-
-                Geometry geom = new Geometry(
-                        feature.get("geometry").get("coordinates").get(0).asDouble(),
-                        feature.get("geometry").get("coordinates").get(1).asDouble(),
-                        feature.get("geometry").get("coordinates").get(2).asDouble()
-                );
-                tmp.setGeometry(geom);
 
                 earthquakes.add(tmp);
             }
