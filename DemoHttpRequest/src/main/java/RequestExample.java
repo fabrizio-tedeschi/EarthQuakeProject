@@ -17,14 +17,16 @@ public class RequestExample {
         //URL data
         String protocol = "https";
         String host = "jsonplaceholder.typicode.com";
-        String path = "users";
+        String path = "posts";
 
         //Building URL
-        URL myurl = new HttpUrl.Builder()
-                .scheme(protocol)
-                .host(host)
-                .addPathSegments(path)
-                .build().url();
+        HttpUrl.Builder urlBuilder = new HttpUrl.Builder();
+
+        urlBuilder.scheme(protocol);
+        urlBuilder.host(host);
+        urlBuilder.addPathSegment(path);
+
+        URL myurl = urlBuilder.build().url();
 
         //Printing the generated URL
         System.out.println("Generated URL: " + myurl);
@@ -49,11 +51,14 @@ public class RequestExample {
             //Parsing the body string to JsonNode format (from JACKSON)
             JsonNode bodyNode = mapper.readTree(responseBody.string());
 
-            //Printing some information from Json
-            System.out.println("------- Printing first user infos -------");
-            System.out.println(bodyNode.get(0).get("id").asInt());
-            System.out.println(bodyNode.get(0).get("name").asText());
-            System.out.println(bodyNode.get(0).get("email").asText());
+            for(int i = 0; i < bodyNode.size(); i++) {
+
+                Post post = mapper.readValue(bodyNode.get(i).toString(), Post.class);
+
+                System.out.println("--> Printing post " + (i+1) + ":");
+                System.out.println(post.toString());
+                System.out.println();
+            }
         }
         catch (IOException e) {
             //Catching errors and throwing exceptions
