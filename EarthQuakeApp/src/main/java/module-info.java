@@ -4,6 +4,8 @@ open module ftvp.earthquakeapp {
     requires okhttp3;
     requires com.fasterxml.jackson.databind;
     requires java.desktop;
+    requires annotations;
+    requires io.github.cdimascio.dotenv.java;
 
 /*
     opens ftvp.earthquakeapp to javafx.fxml;

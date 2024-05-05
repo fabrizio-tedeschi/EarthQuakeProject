@@ -1,15 +1,18 @@
 package ftvp.earthquakeapp.persistence.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.util.Date;
 import java.util.Objects;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Earthquake {
 
     String id;
     String title;
     double mag;
     String place;
-    long millitime;
+    long time;
     String detail;
     String alert;
     int tsunami;
@@ -18,16 +21,16 @@ public class Earthquake {
 
     public Earthquake(){}
 
-    public Earthquake(String id, String title, double mag, String place, long millitime, String detail, String alert, int tsunami, Geometry geometry) {
+    public Earthquake(String id, String title, double mag, String place, long time, String detail, String alert, int tsunami, Geometry geometry) {
         this.id = id;
         this.title = title;
-        this.mag = mag;
+        this.mag = Math.round(mag*100.0)/100.0;
         this.place = place;
-        this.millitime = millitime;
+        this.time = time;
         this.detail = detail;
         this.alert = alert;
         this.tsunami = tsunami;
-        this.datetime = new Date(millitime);
+        this.datetime = new Date(time);
         this.geometry = geometry;
     }
 
@@ -47,8 +50,8 @@ public class Earthquake {
         return place;
     }
 
-    public long getMillitime() {
-        return millitime;
+    public long getTime() {
+        return time;
     }
 
     public String getDetail() {
@@ -80,15 +83,15 @@ public class Earthquake {
     }
 
     public void setMag(double mag) {
-        this.mag = mag;
+        this.mag = Math.round(mag*100.0)/100.0;
     }
 
     public void setPlace(String place) {
         this.place = place;
     }
 
-    public void setMillitime(long millitime) {
-        this.millitime = millitime;
+    public void setTime(long time) {
+        this.time = time;
     }
 
     public void setDetail(String detail) {
@@ -103,8 +106,8 @@ public class Earthquake {
         this.tsunami = tsunami;
     }
 
-    public void setDatetime(Date datetime) {
-        this.datetime = datetime;
+    public void setDatetime() {
+        this.datetime = new Date(time);
     }
 
     public void setGeometry(Geometry geometry) {
@@ -121,7 +124,7 @@ public class Earthquake {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getTitle(), getMag(), getPlace(), getMillitime(),
+        return Objects.hash(getId(), getTitle(), getMag(), getPlace(), getTime(),
                 getDetail(), getAlert(), getTsunami(), getDatetime(), getGeometry());
     }
 
@@ -132,7 +135,7 @@ public class Earthquake {
                 ", title='" + title + '\'' +
                 ", mag=" + mag +
                 ", place='" + place + '\'' +
-                ", millitime=" + millitime +
+                ", time=" + time +
                 ", detail='" + detail + '\'' +
                 ", alert='" + alert + '\'' +
                 ", tsunami=" + tsunami +

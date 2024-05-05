@@ -8,6 +8,8 @@ public class Geometry {    private String type;
     double longitude;
     double altitude;
 
+    public Geometry() {}
+
     public Geometry(double latitude, double longitude, double altitude) {
         this.latitude = latitude;
         this.longitude = longitude;
