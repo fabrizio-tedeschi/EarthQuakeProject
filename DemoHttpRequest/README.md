@@ -24,7 +24,7 @@ An URL (Uniform Resource Locator) is a char sequence that uniquely identifies an
 * **PATH**: the path to reach interested resources
 * **QUERY STRING**: contains input data (for example for the API) using key-value couples. It starts with the `?` char.
 
-![URL](./images/url-parts.jpg)
+![URL](./images/url-parts-big.jpg)
 
 ## Make an HTTP request with JAVA
 
@@ -66,7 +66,7 @@ Note well, you can also use an URL string, however when you have to make a lot o
 //URL data
 String protocol = "https";
 String host = "jsonplaceholder.typicode.com";
-String path = "users";
+String path = "posts";
 
 //Building URL
 HttpUrl.Builder urlBuilder = new HttpUrl.Builder();
@@ -79,7 +79,7 @@ URL myurl = urlBuilder.build().url();
 ```
 The result is:
 ```url
-https://jsonplaceholder.typicode.com/users
+https://jsonplaceholder.typicode.com/posts
 ```
 
 You can also add query string params befor building the url using the `addQueryParameter(String name, String value)` method. Here is an example:
@@ -148,10 +148,10 @@ ObjectMapper mapper = new ObjectMapper();
 JsonNode bodyNode = mapper.readTree(responseBody.string());
 
 //Printing some information from Json
-System.out.println("------- Printing first user infos -------");
+System.out.println("------- Printing first post infos -------");
 System.out.println(bodyNode.get(0).get("id").asInt());
-System.out.println(bodyNode.get(0).get("name").asText());
-System.out.println(bodyNode.get(0).get("email").asText());
+System.out.println(bodyNode.get(0).get("title").asText());
+System.out.println(bodyNode.get(0).get("body").asText());
 ```
 
 As you see now you can access to alla JSON information using key values and `get()` method.
@@ -164,8 +164,8 @@ The method takes a String in Json format and a class type. The method returns an
 
 ```java
 JsonNode jsonbody = mapper.readTree(responseBody.string());
-User usr = mapper.readValue(jsonbody, User.class);
-usr.getName() //Will print the name contained into jsonbody "name" field.
+Post pst = mapper.readValue(jsonbody.toString(), Post.class);
+pst.getId() //Will print the name contained into jsonbody "id" field.
 ```
 
 ---
