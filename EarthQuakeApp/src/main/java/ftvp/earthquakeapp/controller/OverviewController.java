@@ -6,33 +6,37 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.text.TextAlignment;
-import javafx.stage.Stage;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Date;
+import java.util.*;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+import javafx.scene.control.TextField;
 
 public class OverviewController {
 
     @FXML
     private Button searchButton;
+
     @FXML
     private Button deleteButton;
 
+    @FXML
+    private TextField searchField;
+
+    @FXML
+    private TextField minMag;
+
+    @FXML
+    private TextField maxMag;
 
     private final ObservableList<Earthquake> earthquakes = FXCollections.observableArrayList();
     private EarthquakeRequestMaker earthquakeRequestMaker = new EarthquakeRequestMaker();
@@ -79,6 +83,39 @@ public class OverviewController {
     @FXML
     void onSearchClicked() {
         deleteButton.setDisable(false);
+        applySearchFilter();
+    }
+
+    private void applySearchFilter() {
+        String searchText = searchField.getText().toLowerCase();
+        if (isNumeric(searchText)) {
+            return;
+        }
+
+        Double minMagValue = parseDouble(minMag.getText());
+        Double maxMagValue = parseDouble(maxMag.getText());
+
+        ObservableList<Earthquake> filteredList = earthquakes.stream().filter(eq -> {
+                    boolean matchesText = eq.getTitle().toLowerCase().contains(searchText) || eq.getPlace().toLowerCase().contains(searchText);
+                    boolean matchesMinMag = minMagValue == null || eq.getMag() >= minMagValue;
+                    boolean matchesMaxMag = maxMagValue == null || eq.getMag() <= maxMagValue;
+                    return matchesText && matchesMinMag && matchesMaxMag;
+                }).collect(Collectors.toCollection(FXCollections::observableArrayList));
+
+        tvEarthquakes.getItems().clear();
+        tvEarthquakes.setItems(filteredList);
+    }
+
+    private boolean isNumeric(String str) {
+        return str.matches("\\d+");
+    }
+
+    private Double parseDouble(String str) {
+        try {
+            return Double.parseDouble(str);
+        } catch (NumberFormatException e) {
+            return null;
+        }
     }
 
     @FXML
@@ -89,6 +126,24 @@ public class OverviewController {
     @FXML
     void onMapClicked() throws URISyntaxException, IOException {
         Desktop.getDesktop().browse(new URI("https://earthquake.usgs.gov/earthquakes/map/?extent=-88.3591,-538.59375&extent=88.3591,316.40625"));
+    }
+
+    @FXML
+    void onRefreshClicked() {
+        earthquakes.clear();
+        List<Earthquake> earthquakesFound = earthquakeRequestMaker.getDefault();
+        earthquakes.addAll(earthquakesFound);
+        applySearchFilter();
+    }
+
+    @FXML
+    void onDeleteClicked() {
+        searchField.clear();
+        minMag.clear();
+        maxMag.clear();
+        applySearchFilter();
+        initialize();
+
     }
 
 }
