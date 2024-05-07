@@ -39,7 +39,10 @@ public class OverviewController {
     private TextField maxMag;
 
     @FXML
-    private DatePicker datePicker;
+    private DatePicker startDatePicker;
+
+    @FXML
+    private DatePicker endDatePicker;
 
     private List<Earthquake> earthquakesFound = new ArrayList<>();
     private ObservableList<Earthquake> earthquakes = FXCollections.observableArrayList();
@@ -53,12 +56,21 @@ public class OverviewController {
     TableColumn<Earthquake, String> placeCol = new TableColumn<>("Place");
     TableColumn<Earthquake, Date> timeCol = new TableColumn<>("Time");
 
+    public void showInformationAlert() {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("ERROR");
+        alert.setHeaderText("NOT FOUND");
+        alert.setContentText("The parameters you are looking for were not found");
+        alert.showAndWait();
+    }
 
     public void initialize(){
         earthquakeRequestMaker.setPlace(null);
         earthquakeRequestMaker.setMinmag(0.0);
         earthquakeRequestMaker.setMaxmag(0.0);
-        earthquakeRequestMaker.setDate(null);
+        earthquakeRequestMaker.setStartDate(null);
+        earthquakeRequestMaker.setEndDate(null);
+
         initDataSource();
         initializeTableViewProperties();
     }
@@ -69,6 +81,9 @@ public class OverviewController {
     }
 
     public void setTableView(){
+        if(earthquakes.isEmpty()){
+            showInformationAlert();
+        }
         tvEarthquakes.setItems(earthquakes);
         tvEarthquakes.getColumns().setAll(titleCol, magCol, placeCol, timeCol);
     }
@@ -102,14 +117,24 @@ public class OverviewController {
         setTableView();
     }
 
+    private boolean isNumeric(String str) {
+        return str.matches("\\d+");
+    }
+
     @FXML
     void onSearchClicked() {
         deleteButton.setDisable(false);
 
-        if(datePicker.getValue() == null){
-            earthquakeRequestMaker.setDate(null);
+        if(startDatePicker.getValue() == null){
+            earthquakeRequestMaker.setStartDate(null);
         }else{
-            earthquakeRequestMaker.setDate(datePicker.getValue().toString());
+            earthquakeRequestMaker.setStartDate(startDatePicker.getValue().toString());
+        }
+
+        if(endDatePicker.getValue() == null){
+            earthquakeRequestMaker.setEndDate(null);
+        }else{
+            earthquakeRequestMaker.setEndDate(endDatePicker.getValue().toString());
         }
 
         if(searchField.getText().isEmpty()){
@@ -119,18 +144,29 @@ public class OverviewController {
             earthquakeRequestMaker.setPlace(searchField.getText());
         }
 
-        if(minMag.getText().isEmpty()){
-            earthquakeRequestMaker.setMinmag(0.0);
-        }else{
-            earthquakeRequestMaker.setMinmag(Double.parseDouble(minMag.getText()));
-        }
-
         if(maxMag.getText().isEmpty()){
             earthquakeRequestMaker.setMaxmag(0.0);
         }
         else{
-            earthquakeRequestMaker.setMaxmag(Double.parseDouble(maxMag.getText()));
+            if(isNumeric(maxMag.getText())){
+                earthquakeRequestMaker.setMaxmag(Double.parseDouble(maxMag.getText()));
+            }
+            else{
+                earthquakeRequestMaker.setMaxmag(0.0);
+            }
         }
+
+        if(minMag.getText().isEmpty()){
+            earthquakeRequestMaker.setMinmag(0.0);
+        }else {
+            if(isNumeric(minMag.getText())){
+                earthquakeRequestMaker.setMinmag(Double.parseDouble(minMag.getText()));
+            }
+            else{
+                earthquakeRequestMaker.setMinmag(0.0);
+            }
+        }
+
 
         refresh();
     }
@@ -155,7 +191,8 @@ public class OverviewController {
         searchField.clear();
         minMag.clear();
         maxMag.clear();
-        datePicker.setValue(null);
-    }
+        startDatePicker.setValue(null);
+        endDatePicker.setValue(null);
+    }   
 
 }

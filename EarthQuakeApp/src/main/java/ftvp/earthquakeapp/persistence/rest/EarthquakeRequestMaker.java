@@ -24,7 +24,8 @@ public class EarthquakeRequestMaker extends RequestMaker {
     String path = "fdsnws/event/1/query";
 
     String place;
-    String date;
+    String startDate;
+    String endDate;
     double minmag;
     double maxmag;
 
@@ -34,20 +35,14 @@ public class EarthquakeRequestMaker extends RequestMaker {
         super();
     }
 
-    public EarthquakeRequestMaker(String protocol, String host, String path, String place, String date, double minmag, double maxmag) {
-        super(protocol, host, path);
-        this.place = place;
-        this.date = date;
-        this.minmag = minmag;
-        this.maxmag = maxmag;
-    }
-
     public String getPlace() {
         return place;
     }
 
-    public String getDate() {
-        return date;
+    public String getStartDate() { return startDate; }
+
+    public String getEndDate() {
+        return endDate;
     }
 
     public double getMinmag() {
@@ -66,8 +61,12 @@ public class EarthquakeRequestMaker extends RequestMaker {
         this.minmag = minmag;
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    public void setStartDate(String startDate) {
+        this.startDate = startDate;
+    }
+
+    public void setEndDate(String endDate) {
+        this.endDate = endDate;
     }
 
     public void setPlace(String place) {
@@ -91,12 +90,15 @@ public class EarthquakeRequestMaker extends RequestMaker {
             builder.addQueryParameter("maxradiuskm", "1000");
         }
 
-        if(date != null){
-            builder.addQueryParameter("starttime", date);
-            builder.addQueryParameter("endtime", date);
+        if(startDate != null){
+            builder.addQueryParameter("starttime", startDate);
         }
         else{
             builder.addQueryParameter("starttime", LocalDate.now().toString());
+        }
+
+        if(endDate != null){
+            builder.addQueryParameter("endtime", endDate);
         }
 
         if(minmag != 0.0){
