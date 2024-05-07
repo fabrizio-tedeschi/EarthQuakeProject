@@ -167,6 +167,3 @@ JsonNode jsonbody = mapper.readTree(responseBody.string());
 Post pst = mapper.readValue(jsonbody.toString(), Post.class);
 pst.getId() //Will print the name contained into jsonbody "id" field.
 ```
-
----
-Made by Fabrizio Tedeschi

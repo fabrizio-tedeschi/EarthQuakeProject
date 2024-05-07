@@ -51,7 +51,8 @@ public class RequestExample {
             //Parsing the body string to JsonNode format (from JACKSON)
             JsonNode bodyNode = mapper.readTree(responseBody.string());
 
-            for(int i = 0; i < bodyNode.size(); i++) {
+            //Printing 3/100 post data
+            for(int i = 0; i < 3; i++) {
 
                 Post post = mapper.readValue(bodyNode.get(i).toString(), Post.class);
 
@@ -62,7 +63,7 @@ public class RequestExample {
         }
         catch (IOException e) {
             //Catching errors and throwing exceptions
-            throw new RuntimeException(e);
+            throw new RuntimeException(e.getMessage());
         }
     }
 }

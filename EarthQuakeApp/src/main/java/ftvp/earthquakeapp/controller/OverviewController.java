@@ -6,20 +6,20 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 
+import javafx.scene.control.*;
 import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.awt.*;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-import javafx.scene.control.TextField;
 
 public class OverviewController {
 
@@ -38,30 +38,43 @@ public class OverviewController {
     @FXML
     private TextField maxMag;
 
-    private final ObservableList<Earthquake> earthquakes = FXCollections.observableArrayList();
+    @FXML
+    private DatePicker datePicker;
+
+    private List<Earthquake> earthquakesFound = new ArrayList<>();
+    private ObservableList<Earthquake> earthquakes = FXCollections.observableArrayList();
     private EarthquakeRequestMaker earthquakeRequestMaker = new EarthquakeRequestMaker();
 
     @FXML
     private TableView<Earthquake> tvEarthquakes;
 
+    TableColumn<Earthquake, String> titleCol = new TableColumn<>("Title");
+    TableColumn<Earthquake, Integer> magCol = new TableColumn<>("Magnitude");
+    TableColumn<Earthquake, String> placeCol = new TableColumn<>("Place");
+    TableColumn<Earthquake, Date> timeCol = new TableColumn<>("Time");
+
+
     public void initialize(){
+        earthquakeRequestMaker.setPlace(null);
+        earthquakeRequestMaker.setMinmag(0.0);
+        earthquakeRequestMaker.setMaxmag(0.0);
+        earthquakeRequestMaker.setDate(null);
         initDataSource();
         initializeTableViewProperties();
     }
 
     public void initDataSource(){
-        List<Earthquake> earthquakesFound = earthquakeRequestMaker.getDefault();
+        earthquakesFound = earthquakeRequestMaker.getByParams();
         earthquakes.addAll(StreamSupport.stream(earthquakesFound.spliterator(), false).toList());
+    }
+
+    public void setTableView(){
+        tvEarthquakes.setItems(earthquakes);
+        tvEarthquakes.getColumns().setAll(titleCol, magCol, placeCol, timeCol);
     }
 
     @FXML
     public void initializeTableViewProperties(){
-
-        TableColumn<Earthquake, String> titleCol = new TableColumn<>("Title");
-        TableColumn<Earthquake, Integer> magCol = new TableColumn<>("Magnitude");
-        TableColumn<Earthquake, String> placeCol = new TableColumn<>("Place");
-        TableColumn<Earthquake, Date> timeCol = new TableColumn<>("Time");
-
 
         titleCol.setPrefWidth(280);
         titleCol.setCellValueFactory(new PropertyValueFactory<>("title"));
@@ -75,47 +88,51 @@ public class OverviewController {
         timeCol.setPrefWidth(210);
         timeCol.setCellValueFactory(new PropertyValueFactory<>("datetime"));
 
+        setTableView();
+    }
 
-        tvEarthquakes.setItems(earthquakes);
-        tvEarthquakes.getColumns().setAll(titleCol, magCol, placeCol, timeCol);
+    public void refresh(){
+
+        earthquakesFound.clear();
+        earthquakes.clear();
+        tvEarthquakes.getItems().clear();
+        earthquakesFound = earthquakeRequestMaker.getByParams();
+        earthquakes.addAll(StreamSupport.stream(earthquakesFound.spliterator(), false).toList());
+
+        setTableView();
     }
 
     @FXML
     void onSearchClicked() {
         deleteButton.setDisable(false);
-        applySearchFilter();
-    }
 
-    private void applySearchFilter() {
-        String searchText = searchField.getText().toLowerCase();
-        if (isNumeric(searchText)) {
-            return;
+        if(datePicker.getValue() == null){
+            earthquakeRequestMaker.setDate(null);
+        }else{
+            earthquakeRequestMaker.setDate(datePicker.getValue().toString());
         }
 
-        Double minMagValue = parseDouble(minMag.getText());
-        Double maxMagValue = parseDouble(maxMag.getText());
-
-        ObservableList<Earthquake> filteredList = earthquakes.stream().filter(eq -> {
-                    boolean matchesText = eq.getTitle().toLowerCase().contains(searchText) || eq.getPlace().toLowerCase().contains(searchText);
-                    boolean matchesMinMag = minMagValue == null || eq.getMag() >= minMagValue;
-                    boolean matchesMaxMag = maxMagValue == null || eq.getMag() <= maxMagValue;
-                    return matchesText && matchesMinMag && matchesMaxMag;
-                }).collect(Collectors.toCollection(FXCollections::observableArrayList));
-
-        tvEarthquakes.getItems().clear();
-        tvEarthquakes.setItems(filteredList);
-    }
-
-    private boolean isNumeric(String str) {
-        return str.matches("\\d+");
-    }
-
-    private Double parseDouble(String str) {
-        try {
-            return Double.parseDouble(str);
-        } catch (NumberFormatException e) {
-            return null;
+        if(searchField.getText().isEmpty()){
+            earthquakeRequestMaker.setPlace(null);
         }
+        else{
+            earthquakeRequestMaker.setPlace(searchField.getText());
+        }
+
+        if(minMag.getText().isEmpty()){
+            earthquakeRequestMaker.setMinmag(0.0);
+        }else{
+            earthquakeRequestMaker.setMinmag(Double.parseDouble(minMag.getText()));
+        }
+
+        if(maxMag.getText().isEmpty()){
+            earthquakeRequestMaker.setMaxmag(0.0);
+        }
+        else{
+            earthquakeRequestMaker.setMaxmag(Double.parseDouble(maxMag.getText()));
+        }
+
+        refresh();
     }
 
     @FXML
@@ -130,10 +147,7 @@ public class OverviewController {
 
     @FXML
     void onRefreshClicked() {
-        earthquakes.clear();
-        List<Earthquake> earthquakesFound = earthquakeRequestMaker.getDefault();
-        earthquakes.addAll(earthquakesFound);
-        applySearchFilter();
+        refresh();
     }
 
     @FXML
@@ -141,9 +155,7 @@ public class OverviewController {
         searchField.clear();
         minMag.clear();
         maxMag.clear();
-        applySearchFilter();
-        initialize();
-
+        datePicker.setValue(null);
     }
 
 }

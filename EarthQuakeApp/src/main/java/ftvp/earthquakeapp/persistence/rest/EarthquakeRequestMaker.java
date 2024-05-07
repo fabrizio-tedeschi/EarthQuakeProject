@@ -24,7 +24,7 @@ public class EarthquakeRequestMaker extends RequestMaker {
     String path = "fdsnws/event/1/query";
 
     String place;
-    Date date;
+    String date;
     double minmag;
     double maxmag;
 
@@ -34,7 +34,7 @@ public class EarthquakeRequestMaker extends RequestMaker {
         super();
     }
 
-    public EarthquakeRequestMaker(String protocol, String host, String path, String place, Date date, double minmag, double maxmag) {
+    public EarthquakeRequestMaker(String protocol, String host, String path, String place, String date, double minmag, double maxmag) {
         super(protocol, host, path);
         this.place = place;
         this.date = date;
@@ -46,7 +46,7 @@ public class EarthquakeRequestMaker extends RequestMaker {
         return place;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
@@ -66,63 +66,12 @@ public class EarthquakeRequestMaker extends RequestMaker {
         this.minmag = minmag;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
 
     public void setPlace(String place) {
         this.place = place;
-    }
-
-    public List<Earthquake> getDefault() {
-
-        URL myurl = new HttpUrl.Builder()
-                .scheme(protocol)
-                .host(host)
-                .addPathSegments(path)
-                .addQueryParameter("format", "geojson")
-                .addQueryParameter("starttime", LocalDate.now().toString())
-                .build().url();
-
-        Request request = new Request.Builder()
-                .url(myurl)
-                .build();
-
-        Call call = client.newCall(request);
-
-        try (Response response = call.execute()){
-
-            if(!response.isSuccessful()){
-                throw new RuntimeException("Unsuccessful response: code = " + response.code());
-            }
-
-            ResponseBody responseBody = response.body();
-            JsonNode bodyNode = mapper.readTree(responseBody.string());
-
-            List<Earthquake> earthquakes = new ArrayList<>();
-
-            for(JsonNode feature : bodyNode.get("features")){
-
-                Geometry geom = new Geometry(
-                        feature.get("geometry").get("coordinates").get(0).asDouble(),
-                        feature.get("geometry").get("coordinates").get(1).asDouble(),
-                        feature.get("geometry").get("coordinates").get(2).asDouble()
-                );
-
-                Earthquake tmp = mapper.readValue(feature.get("properties").toString(), Earthquake.class);
-                tmp.setId(feature.get("id").asText());
-                tmp.setGeometry(geom);
-                tmp.setDatetime();
-
-                earthquakes.add(tmp);
-            }
-
-            return earthquakes;
-        }
-        catch (IOException e) {
-            //Catching errors and throwing exceptions
-            throw new RuntimeException(e);
-        }
     }
 
     public List<Earthquake> getByParams() {
@@ -139,12 +88,12 @@ public class EarthquakeRequestMaker extends RequestMaker {
 
             builder.addQueryParameter("latitude", String.valueOf(coords.getLatitude()));
             builder.addQueryParameter("longitude", String.valueOf(coords.getLongitude()));
-            builder.addQueryParameter("maxradiuskm", "500");
+            builder.addQueryParameter("maxradiuskm", "1000");
         }
 
         if(date != null){
-            builder.addQueryParameter("starttime", date.toString());
-            builder.addQueryParameter("endtime", date.toString());
+            builder.addQueryParameter("starttime", date);
+            builder.addQueryParameter("endtime", date);
         }
         else{
             builder.addQueryParameter("starttime", LocalDate.now().toString());
@@ -195,7 +144,7 @@ public class EarthquakeRequestMaker extends RequestMaker {
         }
         catch (IOException e) {
             //Catching errors and throwing exceptions
-            throw new RuntimeException(e);
+            throw new RuntimeException(e.getMessage());
         }
     }
 }

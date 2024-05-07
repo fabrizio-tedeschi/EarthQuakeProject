@@ -52,7 +52,7 @@ public class GeometryRequestMaker extends RequestMaker {
             return coordinates;
         }
         catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException(e.getMessage());
         }
     }
 }
