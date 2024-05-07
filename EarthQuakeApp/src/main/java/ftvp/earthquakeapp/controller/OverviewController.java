@@ -73,6 +73,7 @@ public class OverviewController {
 
         initDataSource();
         initializeTableViewProperties();
+        refresh();
     }
 
     public void initDataSource(){
