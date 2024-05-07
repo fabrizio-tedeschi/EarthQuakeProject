@@ -64,6 +64,12 @@ public class OverviewController {
         alert.showAndWait();
     }
 
+    public void clear(){
+        earthquakesFound.clear();
+        earthquakes.clear();
+        tvEarthquakes.getItems().clear();
+    }
+
     public void initialize(){
         earthquakeRequestMaker.setPlace(null);
         earthquakeRequestMaker.setMinmag(0.0);
@@ -71,9 +77,9 @@ public class OverviewController {
         earthquakeRequestMaker.setStartDate(null);
         earthquakeRequestMaker.setEndDate(null);
 
+        clear();
         initDataSource();
         initializeTableViewProperties();
-        refresh();
     }
 
     public void initDataSource(){
@@ -109,9 +115,7 @@ public class OverviewController {
 
     public void refresh(){
 
-        earthquakesFound.clear();
-        earthquakes.clear();
-        tvEarthquakes.getItems().clear();
+        clear();
         earthquakesFound = earthquakeRequestMaker.getByParams();
         earthquakes.addAll(StreamSupport.stream(earthquakesFound.spliterator(), false).toList());
 
@@ -167,7 +171,6 @@ public class OverviewController {
                 earthquakeRequestMaker.setMinmag(0.0);
             }
         }
-
 
         refresh();
     }
