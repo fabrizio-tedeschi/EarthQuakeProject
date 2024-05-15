@@ -45,9 +45,16 @@ public class GeometryRequestMaker extends RequestMaker {
             JsonNode bodyNode = mapper.readTree(responseBody.string());
 
             Geometry coordinates = new Geometry();
-            coordinates.setLatitude(bodyNode.get("items").get(0).get("position").get("lat").asDouble());
-            coordinates.setLongitude(bodyNode.get("items").get(0).get("position").get("lng").asDouble());
-            coordinates.setAltitude(0.0);
+
+            if(bodyNode.get("items").isEmpty()){
+                coordinates.setLatitude(0.0);
+                coordinates.setLongitude(0.0);
+            }
+            else{
+                coordinates.setLatitude(bodyNode.get("items").get(0).get("position").get("lat").asDouble());
+                coordinates.setLongitude(bodyNode.get("items").get(0).get("position").get("lng").asDouble());
+                coordinates.setAltitude(0.0);
+            }
 
             return coordinates;
         }
