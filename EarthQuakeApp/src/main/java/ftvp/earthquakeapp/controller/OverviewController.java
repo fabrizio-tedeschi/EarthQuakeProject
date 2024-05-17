@@ -56,14 +56,6 @@ public class OverviewController {
     TableColumn<Earthquake, String> placeCol = new TableColumn<>("Place");
     TableColumn<Earthquake, Date> timeCol = new TableColumn<>("Time");
 
-    public void showInformationAlert() {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("ERROR");
-        alert.setHeaderText("NOT FOUND");
-        alert.setContentText("The parameters you are looking for were not found");
-        alert.showAndWait();
-    }
-
     public void clear(){
         earthquakesFound.clear();
         earthquakes.clear();
@@ -88,9 +80,6 @@ public class OverviewController {
     }
 
     public void setTableView(){
-        if(earthquakes.isEmpty()){
-            showInformationAlert();
-        }
         tvEarthquakes.setItems(earthquakes);
         tvEarthquakes.getColumns().setAll(titleCol, magCol, placeCol, timeCol);
     }
@@ -176,18 +165,8 @@ public class OverviewController {
     }
 
     @FXML
-    void onHomeClicked(){
-        initialize();
-    }
-
-    @FXML
     void onMapClicked() throws URISyntaxException, IOException {
         Desktop.getDesktop().browse(new URI("https://earthquake.usgs.gov/earthquakes/map/?extent=-88.3591,-538.59375&extent=88.3591,316.40625"));
-    }
-
-    @FXML
-    void onRefreshClicked() {
-        refresh();
     }
 
     @FXML
