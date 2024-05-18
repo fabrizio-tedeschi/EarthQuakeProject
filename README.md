@@ -30,6 +30,16 @@ The `OverviewController` creates an instance of `EarthquakeRequestMaker` and cal
 
 ## Running the application
 
+### Setting API key
+
+1. Go to the [HERE API website](https://developer.here.com/) and generate a FREE geocode API key;
+2. Create a `.env` file into THIS directory and add the following line:
+
+```
+API_KEY=yourAPIkey
+```
+### Running
+
 Open the project folder into a java IDE, compile and start the project. We recommend to use [IntelliJ IDEA](https://www.jetbrains.com/idea/).
 
 ## Developers
