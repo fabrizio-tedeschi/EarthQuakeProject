@@ -1,11 +1,12 @@
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.Objects;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Post {
 
     int userId;
     int id;
     String title;
-    String body;
 
     public Post() {
     }
@@ -14,7 +15,6 @@ public class Post {
         this.userId = userId;
         this.id = id;
         this.title = title;
-        this.body = body;
     }
 
     public int getUserId() {
@@ -29,10 +29,6 @@ public class Post {
         return title;
     }
 
-    public String getBody() {
-        return body;
-    }
-
     public void setUserId(int userId) {
         this.userId = userId;
     }
@@ -45,20 +41,17 @@ public class Post {
         this.title = title;
     }
 
-    public void setBody(String body) {
-        this.body = body;
-    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Post post)) return false;
-        return getUserId() == post.getUserId() && getId() == post.getId() && Objects.equals(getTitle(), post.getTitle()) && Objects.equals(getBody(), post.getBody());
+        return getUserId() == post.getUserId() && getId() == post.getId() && Objects.equals(getTitle(), post.getTitle());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getUserId(), getId(), getTitle(), getBody());
+        return Objects.hash(getUserId(), getId(), getTitle());
     }
 
     @Override
@@ -67,7 +60,6 @@ public class Post {
                 "userId=" + userId +
                 ", id=" + id +
                 ", title='" + title + '\'' +
-                ", body='" + body + '\'' +
                 '}';
     }
 }

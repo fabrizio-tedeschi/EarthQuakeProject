@@ -4,8 +4,6 @@ import okhttp3.*;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
 public class RequestExample {
 
